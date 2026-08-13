@@ -1,45 +1,55 @@
 package com.pdfbarcode.pdf_barcode_decoder
 
-import androidx.annotation.NonNull;
+import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
-import io.flutter.plugin.common.PluginRegistry.Registrar
+import java.util.concurrent.Executors
 
-/** PdfBarcodeDecoderPlugin */
-public class PdfBarcodeDecoderPlugin: FlutterPlugin, MethodCallHandler {
-  override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-    val channel = MethodChannel(flutterPluginBinding.getFlutterEngine().getDartExecutor(), "pdf_barcode_decoder")
-    channel.setMethodCallHandler(PdfBarcodeDecoderPlugin());
-  }
+class PdfBarcodeDecoderPlugin : FlutterPlugin, MethodCallHandler {
+    private lateinit var channel: MethodChannel
+    private lateinit var context: Context
+    private val executor = Executors.newCachedThreadPool()
+    private val mainHandler = Handler(Looper.getMainLooper())
 
-  // This static function is optional and equivalent to onAttachedToEngine. It supports the old
-  // pre-Flutter-1.12 Android projects. You are encouraged to continue supporting
-  // plugin registration via this function while apps migrate to use the new Android APIs
-  // post-flutter-1.12 via https://flutter.dev/go/android-project-migration.
-  //
-  // It is encouraged to share logic between onAttachedToEngine and registerWith to keep
-  // them functionally equivalent. Only one of onAttachedToEngine or registerWith will be called
-  // depending on the user's project. onAttachedToEngine or registerWith must both be defined
-  // in the same class.
-  companion object {
-    @JvmStatic
-    fun registerWith(registrar: Registrar) {
-      val channel = MethodChannel(registrar.messenger(), "pdf_barcode_decoder")
-      channel.setMethodCallHandler(PdfBarcodeDecoderPlugin())
+    override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
+        channel = MethodChannel(flutterPluginBinding.binaryMessenger, "pdf_barcode_decoder")
+        channel.setMethodCallHandler(this)
+        context = flutterPluginBinding.applicationContext
     }
-  }
 
-  override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
-    if (call.method == "getPlatformVersion") {
-      result.success("Android ${android.os.Build.VERSION.RELEASE}")
-    } else {
-      result.notImplemented()
+    override fun onMethodCall(call: MethodCall, result: Result) {
+        if (call.method == "decodePdf") {
+            val pdfBytes = call.argument<ByteArray>("pdfBytes")
+            val filePath = call.argument<String>("filePath")
+            val config = call.argument<Map<String, Any>>("config") ?: emptyMap()
+
+            executor.execute {
+                try {
+                    val manager = PdfDecodeManager(context)
+                    val barcodes = manager.decodePdf(pdfBytes, filePath, config)
+                    mainHandler.post {
+                        result.success(barcodes)
+                    }
+                } catch (e: Exception) {
+                    val message = e.message ?: "Unknown error"
+                    val code = if (message.contains(":")) message.substringBefore(":") else "RENDER_FAILED"
+                    val details = if (message.contains(":")) message.substringAfter(":").trim() else message
+                    mainHandler.post {
+                        result.error(code, details, null)
+                    }
+                }
+            }
+        } else {
+            result.notImplemented()
+        }
     }
-  }
 
-  override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
-  }
+    override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
+        channel.setMethodCallHandler(null)
+    }
 }
