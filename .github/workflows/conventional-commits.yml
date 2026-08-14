@@ -1,0 +1,113 @@
+name: Conventional Commits
+
+on:
+  pull_request:
+    types:
+      - opened
+      - edited
+      - synchronize
+      - reopened
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  validate-title-and-commits:
+    name: Validate PR Title and All Commits
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate Conventional Commits
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const allowedTypes = [
+              'feat',
+              'fix',
+              'docs',
+              'style',
+              'refactor',
+              'perf',
+              'test',
+              'build',
+              'ci',
+              'chore',
+              'revert'
+            ];
+
+            // Regex: type(optional-scope)!?: description
+            // Examples: "feat: add feature", "fix(android)!: crash on null byte", "chore(deps): bump packages"
+            const typesPattern = allowedTypes.join('|');
+            const conventionalCommitRegex = new RegExp(`^(${typesPattern})(\\([a-zA-Z0-9._-]+\\))?(!)?:\\s.+$`);
+
+            let hasErrors = false;
+            const errorMessages = [];
+
+            // 1. Validate PR Title
+            const prTitle = pr.title.trim();
+            if (!conventionalCommitRegex.test(prTitle)) {
+              hasErrors = true;
+              errorMessages.push(`❌ PR Title is invalid:\n   "${prTitle}"`);
+            } else {
+              core.info(`✅ PR Title is valid: "${prTitle}"`);
+            }
+
+            // 2. Fetch and Validate All Commits in the PR
+            const commits = await github.paginate(
+              github.rest.pulls.listCommits,
+              {
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: pr.number,
+                per_page: 100
+              }
+            );
+
+            core.info(`Validating ${commits.length} commit(s) in this PR...`);
+
+            const failedCommits = [];
+            for (const commitData of commits) {
+              const fullMessage = commitData.commit.message;
+              const firstLine = fullMessage.split('\n')[0].trim();
+              const sha = commitData.sha.substring(0, 7);
+
+              // Ignore merge commits (e.g., merge branch 'main' into ...)
+              const isMergeCommit =
+                (commitData.parents && commitData.parents.length > 1) ||
+                /^Merge (branch|remote-tracking branch|pull request)/i.test(firstLine);
+
+              if (isMergeCommit) {
+                core.info(`⏭️ Skipping merge commit [${sha}]: "${firstLine}"`);
+                continue;
+              }
+
+              if (!conventionalCommitRegex.test(firstLine)) {
+                failedCommits.push(`   - [${sha}] "${firstLine}"`);
+              } else {
+                core.info(`✅ Commit [${sha}] is valid: "${firstLine}"`);
+              }
+            }
+
+            if (failedCommits.length > 0) {
+              hasErrors = true;
+              errorMessages.push(`❌ The following commit(s) do not follow Conventional Commits:\n` + failedCommits.join('\n'));
+            }
+
+            if (hasErrors) {
+              core.setFailed(
+                `❌ Conventional Commit validation failed!\n\n` +
+                errorMessages.join('\n\n') +
+                `\n\n📌 Conventional Commit Format:\n` +
+                `   <type>(<optional-scope>): <description>\n\n` +
+                `   Allowed types: ${allowedTypes.join(', ')}\n\n` +
+                `   Examples:\n` +
+                `     - feat: add pdf barcode scanning\n` +
+                `     - fix(android): resolve crash when decoding empty bytes\n` +
+                `     - docs: update example code snippet\n` +
+                `     - test: add unit tests for decoder\n` +
+                `     - chore(deps): upgrade dependencies`
+              );
+            } else {
+              core.info('🎉 All commits and the PR title follow the Conventional Commits specification!');
+            }

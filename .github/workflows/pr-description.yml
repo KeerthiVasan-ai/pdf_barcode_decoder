@@ -1,0 +1,84 @@
+name: PR Description Check
+
+on:
+  pull_request:
+    types:
+      - opened
+      - edited
+      - reopened
+      - synchronize
+
+permissions:
+  pull-requests: read
+
+jobs:
+  validate-pr-description:
+    name: Validate PR Description
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify PR Description and Template Integrity
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const author = pr.user.login;
+
+            // Skip check for automated bot PRs
+            if (author.includes('[bot]') || author === 'dependabot' || author === 'renovate') {
+              core.info(`Skipping PR description check for automated bot: ${author}`);
+              return;
+            }
+
+            const body = pr.body || '';
+
+            if (!body.trim()) {
+              core.setFailed(
+                `❌ Pull request description is empty.\n\n` +
+                `Please fill out the default PR template completely. Do not delete or remove the template.`
+              );
+              return;
+            }
+
+            // Required template sections that must remain present
+            const requiredSections = [
+              '## Description',
+              '## Related Issue',
+              '## Type of Change',
+              '## Affected Platforms',
+              '## How Has This Been Tested?',
+              '## Checklist'
+            ];
+
+            const missingSections = [];
+            for (const section of requiredSections) {
+              if (!body.includes(section)) {
+                missingSections.push(`  - "${section}"`);
+              }
+            }
+
+            if (missingSections.length > 0) {
+              core.setFailed(
+                `❌ The PR description template structure has been modified or deleted!\n\n` +
+                `The PR template sections must not be changed or removed.\n\n` +
+                `Missing required section(s):\n` +
+                missingSections.join('\n') +
+                `\n\nPlease restore the missing sections from the default PR template and fill them out.`
+              );
+              return;
+            }
+
+            // Remove HTML comments (<!-- ... -->)
+            const cleanBody = body.replace(/<!--[\s\S]*?-->/g, '').trim();
+
+            // Check if PR body has actual content added beyond just the headers
+            const minLength = 50;
+            if (cleanBody.length < minLength) {
+              core.setFailed(
+                `❌ Pull request description is too short or has not been filled out.\n\n` +
+                `Please do not submit an empty template. Provide clear details under Description, Type of Change, and Testing.\n` +
+                `Current non-comment character count: ${cleanBody.length} (minimum required: ${minLength})`
+              );
+              return;
+            }
+
+            core.info(`✅ PR template integrity verified and all required sections are present.`);
