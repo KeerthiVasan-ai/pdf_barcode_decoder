@@ -4,6 +4,7 @@ import 'pdf_barcode_decoder_method_channel.dart';
 import 'src/models/decoder_config.dart';
 import 'src/models/pdf_barcode.dart';
 
+/// The interface that platform-specific implementations of `pdf_barcode_decoder` must extend.
 abstract class PdfBarcodeDecoderPlatform extends PlatformInterface {
   /// Constructs a PdfBarcodeDecoderPlatform.
   PdfBarcodeDecoderPlatform() : super(token: _token);
@@ -25,7 +26,12 @@ abstract class PdfBarcodeDecoderPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<List<PdfBarcode>> decodePdf({String? filePath, Uint8List? pdfBytes, required DecoderConfig config}) {
+  /// Platform interface method to decode barcodes from either [filePath] or [pdfBytes].
+  Future<List<PdfBarcode>> decodePdf({
+    String? filePath,
+    Uint8List? pdfBytes,
+    required DecoderConfig config,
+  }) {
     throw UnimplementedError('decodePdf() has not been implemented.');
   }
 }

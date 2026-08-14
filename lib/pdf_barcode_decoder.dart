@@ -10,8 +10,20 @@ export 'src/exceptions/pdf_barcode_exception.dart';
 export 'src/models/decoder_config.dart';
 export 'src/models/pdf_barcode.dart';
 
+/// Top-level interface for decoding barcodes from PDF documents.
+///
+/// Provides static methods to decode barcodes from in-memory bytes ([decode]),
+/// filesystem files ([decodeFile]), or bundled Flutter assets ([decodeAsset]).
 class PdfBarcodeDecoder {
-  /// Decodes barcodes from PDF bytes in memory.
+  const PdfBarcodeDecoder._();
+
+  /// Decodes barcodes from raw PDF bytes in memory.
+  ///
+  /// [pdfBytes] is the raw byte buffer of the PDF file.
+  /// An optional [config] can be supplied to configure rendering DPI,
+  /// barcode formats, page limits, and early termination.
+  ///
+  /// Returns a list of [PdfBarcode] instances discovered across scanned pages.
   static Future<List<PdfBarcode>> decode(
     Uint8List pdfBytes, {
     DecoderConfig? config,
@@ -22,7 +34,12 @@ class PdfBarcodeDecoder {
     );
   }
 
-  /// Decodes barcodes from a PDF file on the filesystem.
+  /// Decodes barcodes from a PDF [file] on the filesystem.
+  ///
+  /// An optional [config] can be supplied to configure rendering DPI,
+  /// barcode formats, page limits, and early termination.
+  ///
+  /// Returns a list of [PdfBarcode] instances discovered across scanned pages.
   static Future<List<PdfBarcode>> decodeFile(
     File file, {
     DecoderConfig? config,
@@ -33,7 +50,14 @@ class PdfBarcodeDecoder {
     );
   }
 
-  /// Decodes barcodes from an asset bundled with the app.
+  /// Decodes barcodes from an asset bundled with the Flutter application.
+  ///
+  /// [assetPath] is the relative path to the asset as specified in `pubspec.yaml`
+  /// (e.g. `'assets/sample.pdf'`).
+  /// An optional [config] can be supplied to configure rendering DPI,
+  /// barcode formats, page limits, and early termination.
+  ///
+  /// Returns a list of [PdfBarcode] instances discovered across scanned pages.
   static Future<List<PdfBarcode>> decodeAsset(
     String assetPath, {
     DecoderConfig? config,

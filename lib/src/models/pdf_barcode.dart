@@ -1,12 +1,22 @@
 import 'dart:ui';
 import '../enums/barcode_format.dart';
 
+/// Represents a barcode detected within a PDF document.
 class PdfBarcode {
+  /// The format/symbology of the detected barcode.
   final BarcodeFormat type;
+
+  /// The raw decoded string value of the barcode.
   final String value;
+
+  /// The 0-indexed page number of the PDF document where this barcode was detected.
   final int page;
+
+  /// The bounding box rectangle of the detected barcode in pixel coordinates
+  /// corresponding to the page rendered at the configured DPI.
   final Rect boundingBox;
 
+  /// Constructs a [PdfBarcode].
   const PdfBarcode({
     required this.type,
     required this.value,
@@ -14,6 +24,7 @@ class PdfBarcode {
     required this.boundingBox,
   });
 
+  /// Deserializes a [PdfBarcode] from a map received from the platform channel.
   factory PdfBarcode.fromMap(Map<Object?, Object?> map) {
     return PdfBarcode(
       type: BarcodeFormat.values.firstWhere(
@@ -31,6 +42,7 @@ class PdfBarcode {
     );
   }
 
+  /// Serializes the [PdfBarcode] into a map.
   Map<String, dynamic> toMap() {
     return {
       'type': type.name,

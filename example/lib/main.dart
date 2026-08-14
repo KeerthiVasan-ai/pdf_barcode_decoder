@@ -42,9 +42,9 @@ class _MyAppState extends State<MyApp> {
             formats: [BarcodeFormat.all],
           ),
         );
-        print('Decoded barcodes from file: $barcodes');
+        debugPrint('Decoded barcodes from file: $barcodes');
         for (var b in barcodes) {
-          print('Barcode: value=${b.value}, type=${b.type.name}, page=${b.page}');
+          debugPrint('Barcode: value=${b.value}, type=${b.type.name}, page=${b.page}');
         }
         setState(() {
           _barcodes = barcodes;
@@ -76,9 +76,9 @@ class _MyAppState extends State<MyApp> {
           formats: [BarcodeFormat.all],
         ),
       );
-      print('Decoded barcodes from asset: $barcodes');
+      debugPrint('Decoded barcodes from asset: $barcodes');
       for (var b in barcodes) {
-        print('Barcode: value=${b.value}, type=${b.type.name}, page=${b.page}');
+        debugPrint('Barcode: value=${b.value}, type=${b.type.name}, page=${b.page}');
       }
       setState(() {
         _barcodes = barcodes;
