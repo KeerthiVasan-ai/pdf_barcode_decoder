@@ -21,20 +21,22 @@ class MockPdfBarcodeDecoderPlatform
         value: '42',
         page: 0,
         boundingBox: const Rect.fromLTWH(0, 0, 10, 10),
-      )
+      ),
     ];
   }
 }
 
 void main() {
-  final PdfBarcodeDecoderPlatform initialPlatform = PdfBarcodeDecoderPlatform.instance;
+  final PdfBarcodeDecoderPlatform initialPlatform =
+      PdfBarcodeDecoderPlatform.instance;
 
   test('$MethodChannelPdfBarcodeDecoder is the default instance', () {
     expect(initialPlatform, isInstanceOf<MethodChannelPdfBarcodeDecoder>());
   });
 
   test('decode', () async {
-    MockPdfBarcodeDecoderPlatform fakePlatform = MockPdfBarcodeDecoderPlatform();
+    MockPdfBarcodeDecoderPlatform fakePlatform =
+        MockPdfBarcodeDecoderPlatform();
     PdfBarcodeDecoderPlatform.instance = fakePlatform;
 
     final result = await PdfBarcodeDecoder.decode(Uint8List(0));

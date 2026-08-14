@@ -11,23 +11,25 @@ void main() {
 
   setUp(() {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(channel.methodChannel, (MethodCall methodCall) async {
-      log.add(methodCall);
-      if (methodCall.method == 'decodePdf') {
-        return [
-          {
-            'type': 'qr',
-            'value': '123',
-            'page': 0,
-            'left': 0.0,
-            'top': 0.0,
-            'width': 10.0,
-            'height': 10.0,
+        .setMockMethodCallHandler(channel.methodChannel, (
+          MethodCall methodCall,
+        ) async {
+          log.add(methodCall);
+          if (methodCall.method == 'decodePdf') {
+            return [
+              {
+                'type': 'qr',
+                'value': '123',
+                'page': 0,
+                'left': 0.0,
+                'top': 0.0,
+                'width': 10.0,
+                'height': 10.0,
+              },
+            ];
           }
-        ];
-      }
-      return null;
-    });
+          return null;
+        });
   });
 
   tearDown(() {
@@ -45,7 +47,7 @@ void main() {
     expect(log.first.method, 'decodePdf');
     final args = log.first.arguments as Map<Object?, Object?>;
     expect(args['pdfBytes'], bytes);
-    
+
     final configMap = args['config'] as Map;
     expect(configMap['dpi'], 200);
 

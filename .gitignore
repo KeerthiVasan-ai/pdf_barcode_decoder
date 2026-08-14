@@ -27,12 +27,20 @@ migrate_working_dir/
 example/pubspec.lock
 **/doc/api/
 .dart_tool/
-.flutter-plugins-dependencies
+**/.dart_tool/
 .flutter-plugins
+**/.flutter-plugins
+.flutter-plugins-dependencies
+**/.flutter-plugins-dependencies
 .packages
-/build/
-/coverage/
+**/.packages
+build/
+**/build/
+coverage/
 
 # FVM Version Cache
 .fvm/
 .fvmrc
+
+# Planning and notes
+implementation_plan.md

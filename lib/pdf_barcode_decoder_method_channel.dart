@@ -19,14 +19,12 @@ class MethodChannelPdfBarcodeDecoder extends PdfBarcodeDecoderPlatform {
     required DecoderConfig config,
   }) async {
     try {
-      final List<dynamic>? results = await methodChannel.invokeListMethod<dynamic>(
-        'decodePdf',
-        {
-          'filePath': filePath,
-          'pdfBytes': pdfBytes,
-          'config': config.toMap(),
-        },
-      );
+      final List<dynamic>? results = await methodChannel
+          .invokeListMethod<dynamic>('decodePdf', {
+            'filePath': filePath,
+            'pdfBytes': pdfBytes,
+            'config': config.toMap(),
+          });
 
       if (results == null) return [];
 

@@ -33,18 +33,17 @@ class _MyAppState extends State<MyApp> {
           _error = null;
           _barcodes = [];
         });
-        
+
         final path = result.files.single.path!;
         final barcodes = await PdfBarcodeDecoder.decodeFile(
           File(path),
-          config: const DecoderConfig(
-            dpi: 300,
-            formats: [BarcodeFormat.all],
-          ),
+          config: const DecoderConfig(dpi: 300, formats: [BarcodeFormat.all]),
         );
         debugPrint('Decoded barcodes from file: $barcodes');
         for (var b in barcodes) {
-          debugPrint('Barcode: value=${b.value}, type=${b.type.name}, page=${b.page}');
+          debugPrint(
+            'Barcode: value=${b.value}, type=${b.type.name}, page=${b.page}',
+          );
         }
         setState(() {
           _barcodes = barcodes;
@@ -60,7 +59,7 @@ class _MyAppState extends State<MyApp> {
       });
     }
   }
-  
+
   Future<void> _scanAsset() async {
     try {
       setState(() {
@@ -68,17 +67,16 @@ class _MyAppState extends State<MyApp> {
         _error = null;
         _barcodes = [];
       });
-      
+
       final barcodes = await PdfBarcodeDecoder.decodeAsset(
         'assets/sample_qr.pdf',
-        config: const DecoderConfig(
-          dpi: 300,
-          formats: [BarcodeFormat.all],
-        ),
+        config: const DecoderConfig(dpi: 300, formats: [BarcodeFormat.all]),
       );
       debugPrint('Decoded barcodes from asset: $barcodes');
       for (var b in barcodes) {
-        debugPrint('Barcode: value=${b.value}, type=${b.type.name}, page=${b.page}');
+        debugPrint(
+          'Barcode: value=${b.value}, type=${b.type.name}, page=${b.page}',
+        );
       }
       setState(() {
         _barcodes = barcodes;
@@ -98,9 +96,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('PDF Barcode Decoder'),
-        ),
+        appBar: AppBar(title: const Text('PDF Barcode Decoder')),
         body: Column(
           children: [
             Padding(
@@ -108,14 +104,14 @@ class _MyAppState extends State<MyApp> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                    ElevatedButton(
-                      onPressed: _isLoading ? null : _pickAndScanPdf,
-                      child: const Text('Pick PDF'),
-                    ),
-                    ElevatedButton(
-                      onPressed: _isLoading ? null : _scanAsset,
-                      child: const Text('Scan Asset PDF'),
-                    ),
+                  ElevatedButton(
+                    onPressed: _isLoading ? null : _pickAndScanPdf,
+                    child: const Text('Pick PDF'),
+                  ),
+                  ElevatedButton(
+                    onPressed: _isLoading ? null : _scanAsset,
+                    child: const Text('Scan Asset PDF'),
+                  ),
                 ],
               ),
             ),
@@ -124,11 +120,16 @@ class _MyAppState extends State<MyApp> {
             else if (_error != null)
               Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Text('Error: $_error', style: const TextStyle(color: Colors.red)),
+                child: Text(
+                  'Error: $_error',
+                  style: const TextStyle(color: Colors.red),
+                ),
               )
             else if (_barcodes.isEmpty)
               const Expanded(
-                child: Center(child: Text('No barcodes found or no PDF selected.')),
+                child: Center(
+                  child: Text('No barcodes found or no PDF selected.'),
+                ),
               )
             else
               Expanded(
@@ -139,7 +140,9 @@ class _MyAppState extends State<MyApp> {
                     return ListTile(
                       title: Text(b.value),
                       subtitle: Text('Type: ${b.type.name} | Page: ${b.page}'),
-                      trailing: Text('${b.boundingBox.width.toInt()}x${b.boundingBox.height.toInt()}'),
+                      trailing: Text(
+                        '${b.boundingBox.width.toInt()}x${b.boundingBox.height.toInt()}',
+                      ),
                     );
                   },
                 ),
