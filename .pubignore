@@ -1,0 +1,29 @@
+# Version control & tooling
+.git/
+.github/
+.fvm/
+.fvmrc
+
+# IDE & Editor files
+*.iml
+*.ipr
+*.iws
+.idea/
+.vscode/
+
+# Build and temporary files
+build/
+**/build/
+.dart_tool/
+**/.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+**/.packages
+coverage/
+*.log
+.DS_Store
+
+# Planning & Scratch
+implementation_plan.md
+walkthrough.md

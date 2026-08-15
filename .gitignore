@@ -40,7 +40,6 @@ coverage/
 
 # FVM Version Cache
 .fvm/
-.fvmrc
 
 # Planning and notes
 implementation_plan.md
