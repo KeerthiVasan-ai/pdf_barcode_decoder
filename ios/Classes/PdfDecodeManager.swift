@@ -16,7 +16,7 @@ class PdfDecodeManager {
             print("[PdfDecodeManager] Using file path: \(filePath)")
             print("[PdfDecodeManager] File exists: \(FileManager.default.fileExists(atPath: filePath))")
         } else {
-            throw NSError(domain: "PdfDecodeManager", code: 1, userInfo: [NSLocalizedDescriptionKey: "Either pdfBytes or filePath must be provided"])
+            throw NSError(domain: "INVALID_ARGS", code: 1, userInfo: [NSLocalizedDescriptionKey: "Either pdfBytes or filePath must be provided"])
         }
         
         defer {

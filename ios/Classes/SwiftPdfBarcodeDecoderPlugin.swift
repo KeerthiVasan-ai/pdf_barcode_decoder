@@ -19,6 +19,11 @@ public class SwiftPdfBarcodeDecoderPlugin: NSObject, FlutterPlugin {
       let filePath = args["filePath"] as? String
       let config = args["config"] as? [String: Any] ?? [:]
 
+      guard pdfBytes != nil || filePath != nil else {
+        result(FlutterError(code: "INVALID_ARGS", message: "Either pdfBytes or filePath must be provided", details: nil))
+        return
+      }
+
       DispatchQueue.global(qos: .userInitiated).async {
         let manager = PdfDecodeManager()
         do {
@@ -27,7 +32,14 @@ public class SwiftPdfBarcodeDecoderPlugin: NSObject, FlutterPlugin {
             result(barcodes)
           }
         } catch let error as NSError {
-          let code = error.domain == "INVALID_PDF" || error.domain == "ENCRYPTED_PDF" ? error.domain : "RENDER_FAILED"
+          let code: String
+          if error.domain == "INVALID_ARGS" || error.domain == "INVALID_PDF" || error.domain == "ENCRYPTED_PDF" {
+            code = error.domain
+          } else if error.domain == "PdfDecodeManager" && error.code == 1 {
+            code = "INVALID_ARGS"
+          } else {
+            code = "RENDER_FAILED"
+          }
           DispatchQueue.main.async {
             result(FlutterError(code: code, message: error.localizedDescription, details: nil))
           }
