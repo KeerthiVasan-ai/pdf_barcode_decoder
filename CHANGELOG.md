@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.0.2
+
+* **iOS Fixes**:
+  * Fixed iOS native PDF rendering by replacing `PDFPage.thumbnail()` with `UIGraphicsImageRenderer` / CoreGraphics rasterization for full-fidelity decoding at target DPI.
+  * Corrected Y-axis coordinate system transformation and handled non-zero `mediaBox` origin offsets during rendering.
+  * Fixed MethodChannel `decodePdf` method handling in `SwiftPdfBarcodeDecoderPlugin` to resolve runtime casting exceptions.
+  * Fixed Vision barcode scanner bounding box coordinate calculations against actual pixel dimensions.
+  * Removed redundant plugin class implementation.
+* **Example Application**:
+  * Configured iOS Podfile and project settings for the example runner.
+
 ## 0.0.1
 
 * Initial release of `pdf_barcode_decoder`.

@@ -1,6 +1,6 @@
 name: pdf_barcode_decoder
 description: A fast, lightweight Flutter plugin to decode barcodes (QR, PDF417, Aztec, DataMatrix, Code128, etc.) directly from PDF files and bytes.
-version: 0.0.1
+version: 0.0.2
 homepage: https://github.com/KeerthiVasan-ai/pdf_barcode_decoder
 repository: https://github.com/KeerthiVasan-ai/pdf_barcode_decoder
 issue_tracker: https://github.com/KeerthiVasan-ai/pdf_barcode_decoder/issues
