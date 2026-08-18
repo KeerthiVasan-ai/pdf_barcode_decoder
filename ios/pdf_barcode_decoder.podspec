@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'pdf_barcode_decoder'
-  s.version          = '0.0.1'
+  s.version          = '0.0.2'
   s.summary          = 'A Flutter plugin to decode barcodes directly from PDF files and bytes.'
   s.description      = <<-DESC
 A fast, lightweight Flutter plugin to decode barcodes (QR, PDF417, Aztec, DataMatrix, Code128, etc.) directly from PDF files and bytes using native PDFKit and Vision Framework.

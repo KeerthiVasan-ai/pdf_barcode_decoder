@@ -1,6 +1,6 @@
 PODS:
   - Flutter (1.0.0)
-  - pdf_barcode_decoder (0.0.1):
+  - pdf_barcode_decoder (0.0.2):
     - Flutter
 
 DEPENDENCIES:
