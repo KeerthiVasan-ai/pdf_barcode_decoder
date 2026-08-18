@@ -43,7 +43,7 @@ class AppleVisionBarcodeScanner: BarcodeScanner {
                 let top = (1.0 - boundingBox.maxY) * imgHeight // convert to upper-left origin
                 
                 let value = observation.payloadStringValue ?? ""
-                print("[VisionScanner]   -> type=\(observation.symbology.rawValue), value=\(value), box=(\(left),\(top),\(width),\(height))")
+                print("[VisionScanner]   -> type=\(observation.symbology.rawValue), length=\(value.count), box=(\(left),\(top),\(width),\(height))")
                 
                 let result: [String: Any] = [
                     "type": self.mapResultFormat(observation.symbology),

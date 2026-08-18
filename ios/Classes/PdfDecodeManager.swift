@@ -13,8 +13,7 @@ class PdfDecodeManager {
             isTemp = true
         } else if let filePath = filePath {
             url = URL(fileURLWithPath: filePath)
-            print("[PdfDecodeManager] Using file path: \(filePath)")
-            print("[PdfDecodeManager] File exists: \(FileManager.default.fileExists(atPath: filePath))")
+            print("[PdfDecodeManager] Using file: \(url.lastPathComponent), exists: \(FileManager.default.fileExists(atPath: filePath))")
         } else {
             throw NSError(domain: "INVALID_ARGS", code: 1, userInfo: [NSLocalizedDescriptionKey: "Either pdfBytes or filePath must be provided"])
         }
@@ -25,9 +24,9 @@ class PdfDecodeManager {
             }
         }
         
-        print("[PdfDecodeManager] Opening PDF at: \(url.path)")
+        print("[PdfDecodeManager] Opening PDF document")
         guard let document = PDFDocument(url: url) else {
-            print("[PdfDecodeManager] ERROR: PDFDocument returned nil for \(url.path)")
+            print("[PdfDecodeManager] ERROR: PDFDocument failed to open document")
             throw NSError(domain: "INVALID_PDF", code: 2, userInfo: [NSLocalizedDescriptionKey: "Could not open PDF file"])
         }
         print("[PdfDecodeManager] PDF opened: \(document.pageCount) page(s), encrypted=\(document.isEncrypted)")
@@ -47,7 +46,6 @@ class PdfDecodeManager {
         let formats = config["formats"] as? [String] ?? ["all"]
         
         print("[PdfDecodeManager] Config: dpi=\(dpi), firstPageOnly=\(firstPageOnly), stopAfterFirst=\(stopAfterFirst), maxPages=\(maxPages), formats=\(formats)")
-        print("[PdfDecodeManager] Raw config map: \(config)")
         
         let pagesToScan = firstPageOnly ? 1 : min(document.pageCount, maxPages)
         print("[PdfDecodeManager] Will scan \(pagesToScan) page(s)")
