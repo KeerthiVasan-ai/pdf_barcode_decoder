@@ -14,15 +14,18 @@ let package = Package(
             targets: ["pdf_barcode_decoder"]
         )
     ],
-    dependencies: [],
+    dependencies: [
+        .package(name: "FlutterFramework", path: "../FlutterFramework")
+    ],
     targets: [
         .target(
             name: "pdf_barcode_decoder",
-            dependencies: [],
+            dependencies: [
+                .product(name: "FlutterFramework", package: "FlutterFramework")
+            ],
             resources: [
                 .process("PrivacyInfo.xcprivacy")
             ]
         )
     ]
 )
-
