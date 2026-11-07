@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'pdf_barcode_decoder'
-  s.version          = '0.0.2'
+  s.version          = '0.0.3'
   s.summary          = 'A Flutter plugin to decode barcodes directly from PDF files and bytes.'
   s.description      = <<-DESC
 A fast, lightweight Flutter plugin to decode barcodes (QR, PDF417, Aztec, DataMatrix, Code128, etc.) directly from PDF files and bytes using native PDFKit and Vision Framework.
@@ -13,7 +13,8 @@ A fast, lightweight Flutter plugin to decode barcodes (QR, PDF417, Aztec, DataMa
   s.license          = { :file => '../LICENSE' }
   s.author           = { 'Keerthivasan S' => 'https://github.com/KeerthiVasan-ai' }
   s.source           = { :path => '.' }
-  s.source_files = 'Classes/**/*'
+  s.source_files = 'pdf_barcode_decoder/Sources/pdf_barcode_decoder/**/*.swift'
+  s.resource_bundles = {'pdf_barcode_decoder_privacy' => ['pdf_barcode_decoder/Sources/pdf_barcode_decoder/PrivacyInfo.xcprivacy']}
   s.dependency 'Flutter'
   s.platform = :ios, '13.0'
   s.frameworks = 'PDFKit', 'Vision'

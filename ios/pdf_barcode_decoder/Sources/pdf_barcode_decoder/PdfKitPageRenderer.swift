@@ -63,3 +63,4 @@ class DefaultPdfPageRenderer: PdfPageRenderer {
         return image
     }
 }
+

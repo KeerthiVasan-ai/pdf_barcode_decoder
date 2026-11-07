@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.0.3
+
+* **Swift Package Manager (SwiftPM) Support**:
+  * Added native Swift Package Manager support for iOS via `ios/pdf_barcode_decoder/Package.swift`.
+  * Restructured iOS native source files to standard SPM layout under `ios/pdf_barcode_decoder/Sources/pdf_barcode_decoder/`.
+  * Modernized plugin implementation to pure Swift with `@objc(PdfBarcodeDecoderPlugin)` registration, eliminating legacy Objective-C bridge files (`PdfBarcodeDecoderPlugin.h` / `PdfBarcodeDecoderPlugin.m`).
+  * Configured Apple Privacy Manifest (`PrivacyInfo.xcprivacy`) processing in `Package.swift` and CocoaPods resource bundles.
+  * Preserved full CocoaPods backward compatibility in `pdf_barcode_decoder.podspec`.
+
 ## 0.0.2
 
 * **iOS Fixes**:
