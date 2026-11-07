@@ -1,3 +1,4 @@
+import Flutter
 import Foundation
 import PDFKit
 
@@ -77,3 +78,4 @@ class PdfDecodeManager {
         return resultList
     }
 }
+
